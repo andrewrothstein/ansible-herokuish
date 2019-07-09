@@ -1,0 +1,6 @@
+---
+# vars file for herokuish
+herokuish_tgz: herokuish_{{ herokuish_ver }}_{{ herokuish_platform }}.tgz
+herokuish_tgz_url: '{{ herokuish_mirror }}/v{{ herokuish_ver }}/{{ herokuish_tgz }}'
+herokuish_checksum: '{{ herokuish_checksums[herokuish_ver][herokuish_platform] }}'
+herokuish_ver_install_dir: '{{ herokuish_install_dir }}/herokuish-{{ herokuish_ver }}'

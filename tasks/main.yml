@@ -1,0 +1,56 @@
+---
+- name: resolve platform specific vars
+  include_vars: '{{ item }}'
+  with_first_found:
+    - files:
+        - '{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml'
+        - '{{ ansible_distribution }}.yml'
+        - '{{ ansible_os_family }}.yml'
+      skip: true
+      paths:
+        - '{{ role_path }}/vars'
+- name: check for install
+  become: yes
+  stat:
+    path: '{{ herokuish_ver_install_dir }}'
+  changed_when: False
+  register: herokuish_binary
+- when: not herokuish_binary.stat.exists
+  block:
+    - name: download..
+      become: yes
+      become_user: root
+      get_url:
+        url: '{{ herokuish_tgz_url }}'
+        dest: /tmp/{{ herokuish_tgz }}
+        mode: 0644
+        checksum: '{{ herokuish_checksum }}'
+    - name: mkdir
+      become: yes
+      become_user: root
+      file:
+        path: '{{ herokuish_ver_install_dir }}'
+        mode: 0755
+        state: directory
+    - name: unarchive
+      become: yes
+      become_user: root
+      unarchive:
+        remote_src: yes
+        src: /tmp/{{ herokuish_tgz }}
+        dest: '{{ herokuish_ver_install_dir }}'
+        creates: '{{ herokuish_ver_install_dir }}/herokuish'
+  always:
+    - name: cleanup
+      become: yes
+      become_user: root
+      file:
+        path: /tmp/{{ herokuish_tgz }}
+        state: absent
+- name: link
+  become: yes
+  become_user: root
+  file:
+    src: '{{ herokuish_ver_install_dir }}/herokuish'
+    dest: '{{ herokuish_install_dir }}/herokuish'
+    state: link
