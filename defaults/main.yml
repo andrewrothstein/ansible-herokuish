@@ -1,8 +1,10 @@
 ---
 # defaults file for herokuish
-herokuish_ver: '0.5.1'
+herokuish_ver: '0.5.5'
 herokuish_platform: linux_x86_64
 herokuish_mirror: https://github.com/gliderlabs/herokuish/releases/download
+
+herokuish_install_dir: /usr/local/bin
 
 herokuish_checksums:
   '0.5.1':
@@ -10,5 +12,8 @@ herokuish_checksums:
     darwin_x86_64: sha256:5bbb142a960e631218398149bebcb13f1f9240e6a5a6fcfd162dfdc1afc1f728
     # https://github.com/gliderlabs/herokuish/releases/download/v0.5.1/herokuish_0.5.1_linux_x86_64.tgz
     linux_x86_64: sha256:0e32285fff74b5821e3c4b77a5417ae5f3c717b57c5ff89dc32f8b3625306807
-
-herokuish_install_dir: /usr/local/bin
+  '0.5.5':
+    # https://github.com/gliderlabs/herokuish/releases/download/v0.5.5/herokuish_0.5.5_darwin_x86_64.tgz
+    darwin_x86_64: sha256:833bd9aef0047b63dbf4ac5b3633a03d0810a2284bc0f298d4cec8aa0de08a86
+    # https://github.com/gliderlabs/herokuish/releases/download/v0.5.5/herokuish_0.5.5_linux_x86_64.tgz
+    linux_x86_64: sha256:cb6242317a6fb3790c9580c00fdf586da964784a0424b5475fba063e587bc6d6

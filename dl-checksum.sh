@@ -1,28 +1,31 @@
 #!/usr/bin/env sh
-VER='0.5.1'
 DIR=~/Downloads
-MIRROR=https://github.com/gliderlabs/herokuish/releases/download/v${VER}
+MIRROR=https://github.com/gliderlabs/herokuish/releases/download
 
 dl()
 {
-    OS=$1
-    PLATFORM=$2
-    FILE=herokuish_${VER}_${OS}_${PLATFORM}.tgz
-    URL=$MIRROR/$FILE
-    LFILE=$DIR/$FILE
+    local ver=$1
+    local os=$2
+    local arch=$3
+    local platform="${os}_${arch}"
+    local file=herokuish_${ver}_${platform}.tgz
+    local url=$MIRROR/v$ver/$file
+    local lfile=$DIR/$file
 
-    if [ ! -e $LFILE ];
+    if [ ! -e $lfile ];
     then
-        wget -q -O $LFILE $URL
+        wget -q -O $lfile $url
     fi
 
-    printf "    # %s\n" $URL
-    printf "    %s_%s: sha256:%s\n" $OS $PLATFORM `sha256sum $LFILE | awk '{print $1}'`
+    printf "    # %s\n" $url
+    printf "    %s: sha256:%s\n" $platform $(sha256sum $lfile | awk '{print $1}')
 }
 
-printf "  '%s':\n" $VER
-dl darwin x86_64
-dl linux x86_64
+dl_ver() {
+    ver=$1
+    printf "  '%s':\n" $ver
+    dl $ver darwin x86_64
+    dl $ver linux x86_64
+}
 
-
-
+dl_ver ${1:-0.5.5}
