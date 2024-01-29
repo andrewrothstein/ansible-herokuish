@@ -16,7 +16,7 @@
   become: true
   ansible.builtin.stat:
     path: '{{ herokuish_ver_install_dir }}'
-  changed_when: False
+  changed_when: false
   register: herokuish_binary
 - name: Downloading and installing herokuish
   when: not herokuish_binary.stat.exists
