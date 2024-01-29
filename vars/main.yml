@@ -1,6 +1,11 @@
 ---
 # vars file for herokuish
+herokuish_os: '{{ ansible_system | lower }}'
+herokuish_platform: '{{ herokuish_os }}_{{ ansible_architecture }}'
 herokuish_tgz: herokuish_{{ herokuish_ver }}_{{ herokuish_platform }}.tgz
+herokuish_tmp_tgz: '{{ herokuish_tmp_dir | default("/tmp") }}/{{ herokuish_tgz }}'
 herokuish_tgz_url: '{{ herokuish_mirror }}/v{{ herokuish_ver }}/{{ herokuish_tgz }}'
 herokuish_checksum: '{{ herokuish_checksums[herokuish_ver][herokuish_platform] }}'
 herokuish_ver_install_dir: '{{ herokuish_install_dir }}/herokuish-{{ herokuish_ver }}'
+herokuish_exe: '{{ herokuish_ver_install_dir }}/herokuish'
+herokuish_link: '{{ herokuish_install_dir }}/herokuish'

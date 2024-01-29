@@ -1,4 +1,13 @@
 ---
-- hosts: all
+- name: Testing andrewrothstein.herokuish
+  hosts: all
   roles:
-  - role: '{{ playbook_dir }}'
+    - role: '{{ playbook_dir }}'
+  tasks:
+    - name: Executing 'herokuish version'
+      ansible.builtin.command: /usr/local/bin/herokuish version
+      changed_when: false
+      register: herokuish_test_output
+    - name: Output from 'herokuish version'
+      ansible.builtin.debug:
+        msg: '{{ herokuish_test_output.stdout }}'

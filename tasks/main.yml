@@ -1,6 +1,9 @@
 ---
-- name: resolve platform specific vars
-  include_vars: '{{ item }}'
+- name: Installing andrewrothstein.unarchivedeps
+  ansible.builtin.include_role:
+    name: andrewrothstein.unarchivedeps
+- name: Resolve platform specific vars
+  ansible.builtin.include_vars: '{{ item }}'
   with_first_found:
     - files:
         - '{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml'
@@ -9,48 +12,49 @@
       skip: true
       paths:
         - '{{ role_path }}/vars'
-- name: check for install
-  become: yes
-  stat:
+- name: Check for install at {{ herokuish_ver_install_dir }}
+  become: true
+  ansible.builtin.stat:
     path: '{{ herokuish_ver_install_dir }}'
   changed_when: False
   register: herokuish_binary
-- when: not herokuish_binary.stat.exists
+- name: Downloading and installing herokuish
+  when: not herokuish_binary.stat.exists
   block:
-    - name: download..
-      become: yes
+    - name: Downloading {{ herokuish_tgz_url }}
+      become: true
       become_user: root
-      get_url:
+      ansible.builtin.get_url:
         url: '{{ herokuish_tgz_url }}'
-        dest: /tmp/{{ herokuish_tgz }}
-        mode: 0644
+        dest: '{{ herokuish_tmp_tgz }}'
+        mode: '644'
         checksum: '{{ herokuish_checksum }}'
-    - name: mkdir
-      become: yes
+    - name: Mkdir {{ herokuish_ver_install_dir }}
+      become: true
       become_user: root
-      file:
+      ansible.builtin.file:
         path: '{{ herokuish_ver_install_dir }}'
-        mode: 0755
+        mode: '755'
         state: directory
-    - name: unarchive
-      become: yes
+    - name: Unarchive {{ herokuish_tmp_tgz }}
+      become: true
       become_user: root
-      unarchive:
-        remote_src: yes
-        src: /tmp/{{ herokuish_tgz }}
+      ansible.builtin.unarchive:
+        remote_src: true
+        src: '{{ herokuish_tmp_tgz }}'
         dest: '{{ herokuish_ver_install_dir }}'
         creates: '{{ herokuish_ver_install_dir }}/herokuish'
   always:
-    - name: cleanup
-      become: yes
+    - name: Rm {{ herokuish_tmp_tgz }}
+      become: true
       become_user: root
-      file:
-        path: /tmp/{{ herokuish_tgz }}
+      ansible.builtin.file:
+        path: '{{ herokuish_tmp_tgz }}'
         state: absent
-- name: link
-  become: yes
+- name: Linking {{ herokuish_link }} to {{ herokuish_exe }}
+  become: true
   become_user: root
-  file:
-    src: '{{ herokuish_ver_install_dir }}/herokuish'
-    dest: '{{ herokuish_install_dir }}/herokuish'
+  ansible.builtin.file:
+    src: '{{ herokuish_exe }}'
+    dest: '{{ herokuish_link }}'
     state: link

@@ -14,7 +14,7 @@ dl()
 
     if [ ! -e $lfile ];
     then
-        wget -q -O $lfile $url
+        curl -sSLf -o $lfile $url
     fi
 
     printf "    # %s\n" $url
@@ -28,4 +28,4 @@ dl_ver() {
     dl $ver linux x86_64
 }
 
-dl_ver ${1:-0.5.5}
+dl_ver ${1:-0.7.2}
